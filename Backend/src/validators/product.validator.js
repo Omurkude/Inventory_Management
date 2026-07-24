@@ -13,5 +13,7 @@ sku : z.string().min(3) ,
 
 })
 
+const UpdateProductSchema = CreateProductSchema.partial()
 
-module.exports = { CreateProductSchema }
+
+module.exports = { CreateProductSchema , UpdateProductSchema }
