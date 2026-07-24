@@ -40,6 +40,56 @@ const createProduct = async (req, res) => {
     }
 
 }
+
+
+const getAllProducts = async (req, res) => {
+    try {
+        const products = await Product.find()
+    .populate("createdBy", "name email")
+    .sort({ createdAt: -1 });
+        res.status(200).json({
+            success: true,
+            products
+        });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+};
+
+const getProductById = async (req, res) => {
+    try {
+        const id = req.params;
+        const product = await Product.findById(id)
+            .populate("createdBy", "name email");
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            product
+        });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+};
+
 module.exports = {
-    createProduct
+    createProduct,
+    getAllProducts,
+    getProductById
 }
