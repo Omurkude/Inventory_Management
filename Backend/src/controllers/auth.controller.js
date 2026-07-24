@@ -40,4 +40,43 @@ const registerUser = async (req, res) => {
         });
     }
 }
-module.exports = { registerUser };
+
+
+
+const loginUser = async (req, res) => {
+
+    try{
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email });
+        if(!user) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid email or password"
+            });
+        }
+         
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if(!isPasswordValid) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid email or password"
+            });
+        }
+        const token = generateToken(user._id);
+
+        res.status(200).json({
+            success: true,
+            message: "User logged in successfully",
+            token
+        });
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+}
+module.exports = { registerUser ,loginUser };
