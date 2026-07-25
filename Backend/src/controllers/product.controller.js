@@ -44,10 +44,22 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find()
-    .populate("createdBy", "name email")
-    .sort({ createdAt: -1 });
-        res.status(200).json({
+      const {search} = req.query;
+      const filter = {}
+
+
+      if(search){
+        filter.name = { 
+            $regex: search, 
+            $options: 'i' };
+      }
+
+        const products = await Product.find(filter)
+        .populate("createdBy", "name email")
+        .sort({ createdAt: -1 });
+
+
+        return res.status(200).json({
             success: true,
             products
         });
