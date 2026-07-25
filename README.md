@@ -234,7 +234,7 @@ Before running this project, make sure the following software is installed on yo
 Open your terminal and run:
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/Inventory_System.git
+git clone https://github.com/Omurkude/Inventory_System.git
 ```
 
 This command downloads (clones) the project from GitHub to your local computer.
