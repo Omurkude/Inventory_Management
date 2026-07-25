@@ -3,7 +3,7 @@ const Product = require("../models/Product");
 
 const createProduct = async (req, res) => {
     try {
-        const { name, description, category, price, quantity, sku } = req.body;
+        const { name, description, category, price, quantity, sku  ,lowStockThreshold} = req.body;
 
         const existingProduct = await Product.findOne({ sku });
 
@@ -22,6 +22,7 @@ const createProduct = async (req, res) => {
             price,
             quantity,
             sku,
+            lowStockThreshold,
             createdBy: req.user.id
         });
 
@@ -44,7 +45,7 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-      const {search ,category } = req.query;
+      const {search ,category,sku,status } = req.query;
       const filter = {}
 
 
@@ -56,6 +57,37 @@ const getAllProducts = async (req, res) => {
       if(category){
         filter.category = category;
       }
+      if (sku) {
+    filter.sku = {
+        $regex: sku,
+        $options: "i"
+    };
+}
+     if (status === "in-stock") {
+    filter.quantity = {
+        $gt: 0
+    };
+}
+
+    if (status === "out-of-stock") {
+        filter.quantity = 0;
+    }
+     
+     if (status === "low-stock") {
+            filter.$expr = {
+                $and: [
+                    {
+                        $gt: ["$quantity", 0]
+                    },
+                    {
+                        $lte: ["$quantity", "$lowStockThreshold"]
+                    }
+                ]
+            };
+        }
+
+
+
 
         const products = await Product.find(filter)
         .populate("createdBy", "name email")

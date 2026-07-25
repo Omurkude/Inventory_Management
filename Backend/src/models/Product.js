@@ -38,6 +38,11 @@ const productSchema = new mongoose.Schema(
             unique: true,
             trim: true,
         },
+        lowStockThreshold: {
+        type: Number,
+        default: 5,
+        min: 0
+        },
 
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
