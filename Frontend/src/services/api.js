@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://inventory-management-g86j.onrender.com",
+  baseURL: "heheh",
 });
 
 api.interceptors.request.use((config) => {
