@@ -44,7 +44,7 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-      const {search} = req.query;
+      const {search ,category } = req.query;
       const filter = {}
 
 
@@ -52,6 +52,9 @@ const getAllProducts = async (req, res) => {
         filter.name = { 
             $regex: search, 
             $options: 'i' };
+      }
+      if(category){
+        filter.category = category;
       }
 
         const products = await Product.find(filter)
