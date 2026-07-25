@@ -54,8 +54,7 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-        console.log("GET PRODUCTS CONTROLLER");
-console.log(await Product.find());
+      
       const {search ,category,sku,status } = req.query;
       const filter = {}
 
@@ -267,13 +266,9 @@ const updateStock = async (req, res) => {
 
 };
 const getLowStockProducts = async (req, res) => {
-
     try {
-
         const products = await Product.find({
-
-            createdBy: req.user._id,
-
+            createdBy: req.user.id,
             $expr: {
                 $and: [
                     {
@@ -284,7 +279,6 @@ const getLowStockProducts = async (req, res) => {
                     }
                 ]
             }
-
         })
         .populate("createdBy", "name email")
         .populate("category", "name")
@@ -297,17 +291,18 @@ const getLowStockProducts = async (req, res) => {
         });
 
     } catch (error) {
-
         console.error(error);
 
         return res.status(500).json({
             success: false,
             message: "Internal Server Error"
         });
-
     }
-
 };
+
+
+ 
+
      
 
   

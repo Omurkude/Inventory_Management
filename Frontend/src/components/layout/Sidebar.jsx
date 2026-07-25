@@ -6,9 +6,11 @@ import {
   LogOut,
 } from "lucide-react";
 
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function Sidebar() {
+  const navigate = useNavigate();
+
   const links = [
     {
       name: "Dashboard",
@@ -32,6 +34,13 @@ function Sidebar() {
     },
   ];
 
+  function handleLogout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/login", { replace: true });
+  }
+
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col">
 
@@ -46,9 +55,7 @@ function Sidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
-
         {links.map((link) => {
-
           const Icon = link.icon;
 
           return (
@@ -68,10 +75,10 @@ function Sidebar() {
             </NavLink>
           );
         })}
-
       </nav>
 
       <button
+        onClick={handleLogout}
         className="m-4 flex items-center gap-3 rounded-lg bg-red-600 px-4 py-3 text-white hover:bg-red-700 transition"
       >
         <LogOut size={20} />

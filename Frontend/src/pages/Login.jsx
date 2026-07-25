@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import api from "@/services/api"
+
+import api from "@/services/api";
+
 import {
   Card,
   CardContent,
@@ -101,12 +103,25 @@ function Login() {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-violet-600 hover:bg-violet-700"
               disabled={loading}
             >
               {loading ? "Signing In..." : "Sign In"}
             </Button>
           </form>
+
+          <div className="mt-6 border-t border-zinc-800 pt-6">
+            <p className="text-center text-sm text-zinc-400">
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                className="font-medium text-violet-500 hover:text-violet-400 hover:underline"
+              >
+                Register
+              </Link>
+            </p>
+          </div>
+
         </CardContent>
       </Card>
     </div>
