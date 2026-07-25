@@ -98,7 +98,7 @@ const getAllProducts = async (req, res) => {
 
 
 
-        const products = await Product.find(filter)
+        const products = await Product.find({...filter , createdBy: req.user.id})
         .populate("createdBy", "name email")
         .populate("category", "name")
         .sort({ createdAt: -1 });
@@ -121,9 +121,12 @@ const getAllProducts = async (req, res) => {
 const getProductById = async (req, res) => {
     try {
         const id = req.params;
-        const product = await Product.findById(id)
-            .populate("createdBy", "name email")
-            .populate("category", "name");
+        const product = await Product.findOne({
+        _id: id,
+        createdBy: req.user._id
+       })
+        .populate("createdBy", "name email")
+        .populate("category", "name");
             
 
         if (!product) {
@@ -266,6 +269,9 @@ const getLowStockProducts = async (req, res) => {
     try {
 
         const products = await Product.find({
+
+            createdBy: req.user._id,
+
             $expr: {
                 $and: [
                     {
@@ -276,6 +282,7 @@ const getLowStockProducts = async (req, res) => {
                     }
                 ]
             }
+
         })
         .populate("createdBy", "name email")
         .populate("category", "name")
@@ -299,6 +306,9 @@ const getLowStockProducts = async (req, res) => {
     }
 
 };
+     
+
+  
 
 module.exports = {
     createProduct,

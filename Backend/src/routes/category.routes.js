@@ -4,6 +4,7 @@ const {createCategory ,getAllCategories ,getCategoryById ,updateCategory,deleteC
 const validate = require("../middleware/validate.middleware");
 const authMiddleware = require("../middleware/auth.middleware");
 const { createCategorySchema } = require("../validators/category.validators");
+const { updateCategorySchema } = require("../validators/category.validators");
 
 router.post("/",
      authMiddleware,
