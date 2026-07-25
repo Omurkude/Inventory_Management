@@ -91,27 +91,23 @@ const updateProduct= async(req,res)=>{
 
 
     try{
-        const {id} = req.params
+        const product = req.product;
+        product.name = req.body.name ?? product.name;
+        product.description = req.body.description ?? product.description;
+        product.category = req.body.category ?? product.category;
+        product.price = req.body.price ?? product.price;
+        product.quantity = req.body.quantity ?? product.quantity;
+        product.sku = req.body.sku ?? product.sku;
 
-        const updatedProduct = await Product.findByIdAndUpdate(id, req.body, 
-            { new: true ,
-            runValidators: true
-         }).populate("createdBy", "name email");
-
-        if (!updatedProduct) {
-            return res.status(404).json({
-                success: false,
-                message: "Product not found"
-            });
-        }
+        await product.save();
 
         res.status(200).json({
             success: true,
             message: "Product updated successfully",
-            product: updatedProduct
+            product
         });
-
-    }catch(err){
+    }
+    catch(err){
         console.error(err);
         res.status(500).json({
             success: false,
@@ -122,22 +118,13 @@ const updateProduct= async(req,res)=>{
 
 const deleteProduct = async (req, res) => {
     try {
-        const { id } = req.params;
-
-        const deletedProduct = await Product.findByIdAndDelete(id);
-
-        if (!deletedProduct) {
-            return res.status(404).json({
-                success: false,
-                message: "Product not found"
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Product deleted successfully"
-        });
-    } catch (err) {
+    await req.product.deleteOne();
+    res.status(200).json({
+        success: true,
+        message: "Product deleted successfully"
+    });
+    }
+    catch (err) {
         console.error(err);
         res.status(500).json({
             success: false,
