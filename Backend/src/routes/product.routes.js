@@ -4,6 +4,8 @@ const{ createProduct,getAllProducts ,getProductById, updateProduct ,deleteProduc
 const { CreateProductSchema ,UpdateProductSchema } = require('../validators/product.validator');
 const validate = require('../middleware/validate.middleware');
 const authMiddleware = require('../middleware/auth.middleware');
+const {updateStock} = require('../controllers/product.controller');
+const { updateStockSchema } = require('../validators/product.validator');
 
 const authorizeProduct = require("../middleware/authorizeProduct.middleware");
 
@@ -39,4 +41,14 @@ router.delete(
     authMiddleware,
     deleteProduct
 );
+
+router.patch(
+    "/:id/stock",
+    authMiddleware,
+    authorizeProduct,
+    validate(updateStockSchema),
+    updateStock
+);
 module.exports = router;
+
+

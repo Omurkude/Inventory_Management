@@ -1,11 +1,20 @@
 const Product = require("../models/Product");
-
+const Category = require("../models/Category");
 
 const createProduct = async (req, res) => {
     try {
         const { name, description, category, price, quantity, sku  ,lowStockThreshold} = req.body;
 
         const existingProduct = await Product.findOne({ sku });
+
+        const categoryExists = await Category.findById(category);
+
+        if (!categoryExists) {
+            return res.status(404).json({
+                success: false,
+                message: "Category not found"
+            });
+        }
 
 
         if(existingProduct){
@@ -91,6 +100,7 @@ const getAllProducts = async (req, res) => {
 
         const products = await Product.find(filter)
         .populate("createdBy", "name email")
+        .populate("category", "name")
         .sort({ createdAt: -1 });
 
 
@@ -112,7 +122,9 @@ const getProductById = async (req, res) => {
     try {
         const id = req.params;
         const product = await Product.findById(id)
-            .populate("createdBy", "name email");
+            .populate("createdBy", "name email")
+            .populate("category", "name");
+            
 
         if (!product) {
             return res.status(404).json({
@@ -134,34 +146,56 @@ const getProductById = async (req, res) => {
         });
     }
 };
-const updateProduct= async(req,res)=>{
+const updateProduct = async (req, res) => {
 
+    try {
 
-    try{
         const product = req.product;
+
         product.name = req.body.name ?? product.name;
         product.description = req.body.description ?? product.description;
-        product.category = req.body.category ?? product.category;
+
+        if (req.body.category) {
+
+            const categoryExists = await Category.findById(req.body.category);
+
+            if (!categoryExists) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Category not found"
+                });
+            }
+
+            product.category = req.body.category;
+
+        }
+
         product.price = req.body.price ?? product.price;
         product.quantity = req.body.quantity ?? product.quantity;
         product.sku = req.body.sku ?? product.sku;
+        product.lowStockThreshold =
+            req.body.lowStockThreshold ?? product.lowStockThreshold;
 
         await product.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Product updated successfully",
             product
         });
-    }
-    catch(err){
+
+    } catch (err) {
+
         console.error(err);
-        res.status(500).json({
+
+        return res.status(500).json({
             success: false,
             message: "Internal server error"
         });
+
     }
-}
+
+};
 
 const deleteProduct = async (req, res) => {
     try {
@@ -180,11 +214,60 @@ const deleteProduct = async (req, res) => {
     }
 };
 
+const updateStock = async (req, res) => {
+
+    try {
+
+        const product = req.product;
+
+        const { type, quantity } = req.body;
+
+        if (type === "IN") {
+
+            product.quantity += quantity;
+
+        } else {
+
+            if (product.quantity < quantity) {
+
+                return res.status(400).json({
+                    success: false,
+                    message: "Insufficient stock"
+                });
+
+            }
+
+            product.quantity -= quantity;
+
+        }
+
+        await product.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Stock updated successfully",
+            product
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+
+    }
+
+};
+
 module.exports = {
     createProduct,
     getAllProducts,
     getProductById,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    updateStock
 
 }
