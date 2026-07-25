@@ -33,7 +33,7 @@ function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col">
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col">
 
       <div className="p-6 border-b border-zinc-800">
         <h1 className="text-2xl font-bold text-violet-500">
