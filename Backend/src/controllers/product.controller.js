@@ -261,6 +261,44 @@ const updateStock = async (req, res) => {
     }
 
 };
+const getLowStockProducts = async (req, res) => {
+
+    try {
+
+        const products = await Product.find({
+            $expr: {
+                $and: [
+                    {
+                        $gt: ["$quantity", 0]
+                    },
+                    {
+                        $lte: ["$quantity", "$lowStockThreshold"]
+                    }
+                ]
+            }
+        })
+        .populate("createdBy", "name email")
+        .populate("category", "name")
+        .sort({ quantity: 1 });
+
+        return res.status(200).json({
+            success: true,
+            count: products.length,
+            products
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+
+    }
+
+};
 
 module.exports = {
     createProduct,
@@ -268,6 +306,7 @@ module.exports = {
     getProductById,
     updateProduct,
     deleteProduct,
-    updateStock
+    updateStock,
+    getLowStockProducts
 
 }

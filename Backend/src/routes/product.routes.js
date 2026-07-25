@@ -6,7 +6,7 @@ const validate = require('../middleware/validate.middleware');
 const authMiddleware = require('../middleware/auth.middleware');
 const {updateStock} = require('../controllers/product.controller');
 const { updateStockSchema } = require('../validators/product.validator');
-
+const { getLowStockProducts } = require('../controllers/product.controller');
 const authorizeProduct = require("../middleware/authorizeProduct.middleware");
 
 
@@ -22,6 +22,11 @@ router.get('/' ,
      authMiddleware,
      getAllProducts);
 
+     router.get(
+    "/low-stock",
+    authMiddleware,
+    getLowStockProducts
+);
 
 router.get('/:id' , 
     authMiddleware, 
@@ -37,8 +42,8 @@ router.put('/:id' ,
 router.delete(
     "/:id",
 
-    authorizeProduct,
     authMiddleware,
+    authorizeProduct,
     deleteProduct
 );
 
@@ -49,6 +54,8 @@ router.patch(
     validate(updateStockSchema),
     updateStock
 );
+
+
 module.exports = router;
 
 
