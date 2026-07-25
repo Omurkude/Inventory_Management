@@ -4,7 +4,7 @@ const createCategory = async (req, res) => {
 
     try {
 
-        console.log("Controller reached");
+       
 
         const { name, description } = req.body;
 

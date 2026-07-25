@@ -54,6 +54,8 @@ const createProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
+        console.log("GET PRODUCTS CONTROLLER");
+console.log(await Product.find());
       const {search ,category,sku,status } = req.query;
       const filter = {}
 
