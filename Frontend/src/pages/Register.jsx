@@ -30,17 +30,20 @@ function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
+    
     try {
       setLoading(true);
+     
 
       const response = await api.post("/auth/register", formData);
-
+      
       toast.success(response.data.message);
 
       navigate("/login");
 
     } catch (error) {
+
+      
       toast.error(
         error.response?.data?.message || "Registration failed"
       );
@@ -75,6 +78,7 @@ function Register() {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="John Doe"
+                className="text-white"
               />
             </div>
 
@@ -87,6 +91,7 @@ function Register() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="john@example.com"
+                className="text-white"
               />
             </div>
 
@@ -99,10 +104,12 @@ function Register() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="********"
+                className="text-white"
               />
             </div>
 
             <Button
+              type = "submit"
               className="w-full bg-violet-600 hover:bg-violet-700"
               disabled={loading}
             >
